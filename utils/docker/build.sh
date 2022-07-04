@@ -131,6 +131,7 @@ docker run --privileged=true --name=${CONTAINER_NAME} -i \
 	--env DEFAULT_TEST_DIR=/mnt/pmem \
 	--env TESTS_LONG=${TESTS_LONG:-OFF} \
 	--env TESTS_ASAN=${TESTS_ASAN:-OFF} \
+	--env TESTS_TSAN=${TESTS_TSAN:-OFF} \
 	--env TESTS_UBSAN=${TESTS_UBSAN:-OFF} \
 	--env TESTS_PMREORDER=${TESTS_PMREORDER:-ON} \
 	--env TEST_TIMEOUT \
