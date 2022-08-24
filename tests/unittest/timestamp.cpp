@@ -16,6 +16,8 @@
 void multithreaded_asynchronous_append(pmemstream_test_base &stream, const std::vector<pmemstream_region> &regions,
 				       const std::vector<std::vector<std::string>> &data)
 {
+	std::cout << "regions size: " << regions.size() << std::endl;
+
 	using future_type = decltype(stream.helpers.async_append(regions[0], data[0]));
 	std::vector<std::vector<future_type>> futures(data.size());
 
@@ -41,6 +43,8 @@ void multithreaded_asynchronous_append(pmemstream_test_base &stream, const std::
 void multithreaded_synchronous_append(pmemstream_test_base &stream, const std::vector<pmemstream_region> &regions,
 				      const std::vector<std::vector<std::string>> &data)
 {
+	std::cout << "regions size: " << regions.size() << std::endl;
+
 	parallel_exec(data.size(), [&](size_t thread_id) {
 		for (auto &chunk : data) {
 			stream.helpers.append(regions[thread_id], chunk);
@@ -94,11 +98,13 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	// struct test_config_type &test_config = get_test_config();
 	struct test_config_type test_config;
 	test_config.filename = std::string(argv[1]);
-
+	std::cout << "max_concurrency: " << test_config.max_concurrency << std::endl;
 	return run_test(test_config, [&] {
 		return_check ret;
+		std::cout << "max_concurrency: " << test_config.max_concurrency << std::endl;
 		ret += rc::check("timestamp values should increase in each region after synchronous append",
 				 [&](pmemstream_with_multi_empty_regions &&stream) {
 					 auto [regions, elements] =

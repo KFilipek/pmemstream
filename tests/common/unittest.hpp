@@ -88,14 +88,15 @@ static const test_config_type &get_test_config()
 	return test_config;
 }
 
-static inline int run_test(test_config_type config, std::function<void()> test)
+static inline int run_test(test_config_type &config, std::function<void()> test)
 {
 	test_register_sighandlers();
 	set_valgrind_internals();
 
 	if (On_valgrind && config.rc_params.count("max_success") == 0)
 		config.rc_params["max_success"] = std::to_string(RAPIDCHECK_MAX_SUCCESS_ON_VALGRIND);
-
+	if (On_valgrind)
+		std::cout << "O SHIT, VALGRIND IS HERE!" << std::endl;
 	if (On_valgrind)
 		config.max_concurrency = TEST_DEFAULT_MAX_CONCURRENCY_ON_VALGRIND;
 
@@ -121,7 +122,8 @@ static inline int run_test(test_config_type config, std::function<void()> test)
 
 static inline int run_test(std::function<void()> test)
 {
-	return run_test({}, test);
+	test_config_type config;
+	return run_test(config, test);
 }
 
 /* Helper structure for verifying return values from function.
